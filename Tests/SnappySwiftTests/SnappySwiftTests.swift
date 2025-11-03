@@ -237,10 +237,4 @@ final class SnappySwiftTests: XCTestCase {
         }
     }
 
-    // MARK: - Future Compression Tests
-
-    // TODO: Add compression tests once implemented
-    // func testBasicCompression() { ... }
-    // func testBasicDecompression() { ... }
-    // func testRoundTrip() { ... }
 }
