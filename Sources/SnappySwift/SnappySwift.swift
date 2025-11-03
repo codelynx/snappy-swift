@@ -52,8 +52,7 @@ public enum Snappy {
         to output: UnsafeMutableBufferPointer<UInt8>,
         options: CompressionOptions = .default
     ) throws -> Int {
-        // TODO: Implement compression
-        fatalError("Not yet implemented")
+        return try compressImpl(input, to: output, options: options)
     }
 
     /// Decompress data that was compressed with Snappy.

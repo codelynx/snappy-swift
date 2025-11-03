@@ -26,6 +26,12 @@ enum SnappyConstants {
 
     /// Slop bytes for safe overwrite during copy operations
     static let slopBytes: Int = 64
+
+    /// Magic number for hash function (software fallback)
+    static let hashMagic: UInt32 = 0x1e35a7bd
+
+    /// Minimum match length for copy operations
+    static let minMatchLength: Int = 4
 }
 
 // MARK: - Tag Types
