@@ -67,8 +67,7 @@ public enum Snappy {
         _ input: UnsafeBufferPointer<UInt8>,
         to output: UnsafeMutableBufferPointer<UInt8>
     ) throws -> Int {
-        // TODO: Implement decompression
-        fatalError("Not yet implemented")
+        return try decompressImpl(input, to: output)
     }
 
     /// Get the uncompressed length from compressed data.
@@ -78,8 +77,7 @@ public enum Snappy {
     /// - Parameter compressed: Buffer containing compressed data
     /// - Returns: The uncompressed length in bytes, or nil if data is corrupted
     public static func getUncompressedLength(_ compressed: UnsafeBufferPointer<UInt8>) -> Int? {
-        // TODO: Implement
-        fatalError("Not yet implemented")
+        return getUncompressedLengthImpl(compressed)
     }
 
     /// Validate that compressed data is well-formed.
@@ -89,8 +87,7 @@ public enum Snappy {
     /// - Parameter compressed: Buffer containing compressed data
     /// - Returns: true if data appears valid, false otherwise
     public static func isValidCompressed(_ compressed: UnsafeBufferPointer<UInt8>) -> Bool {
-        // TODO: Implement
-        fatalError("Not yet implemented")
+        return isValidCompressedImpl(compressed)
     }
 }
 
