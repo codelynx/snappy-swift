@@ -243,43 +243,20 @@ swift test --filter BenchmarkTests.testCompressionRatios
 
 ### C++ Compatibility Testing
 
-The project includes C++ validation tools for development and testing.
+The project includes C++ validation tools for development and testing. The C++ reference implementation is **not included** in the repository to ensure clean SPM installation for end users.
 
-**Note**: The C++ reference implementation is included as an **optional git submodule**. End users and app developers don't need it - it's only for library development and testing.
+**For Contributors:** If you need to regenerate test data or verify compatibility with the C++ reference implementation, see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed setup instructions.
 
-```bash
-# Initialize the C++ Snappy submodule (only needed for development)
-git submodule update --init
+**Most developers don't need this:**
+- ❌ Using SnappySwift in your app (SPM handles everything)
+- ❌ Running the existing test suite (test data is pre-generated)
+- ❌ General bug fixes or feature additions
 
-# Compile C++ tools (requires g++)
-g++ -std=c++11 generate_test_data.cpp \
-    snappy-cpp/snappy.cc \
-    snappy-cpp/snappy-sinksource.cc \
-    snappy-cpp/snappy-stubs-internal.cc \
-    -o generate_test_data
-
-g++ -std=c++11 validate_snappy.cpp \
-    snappy-cpp/snappy.cc \
-    snappy-cpp/snappy-sinksource.cc \
-    snappy-cpp/snappy-stubs-internal.cc \
-    -o validate_snappy
-
-# Generate C++ test data
-./generate_test_data
-
-# Validate Swift-compressed data with C++
-./validate_snappy <file.snappy> <expected-size>
-```
-
-**When you need the submodule:**
+**You only need C++ setup when:**
 - ✅ Regenerating test data from C++ reference
 - ✅ Validating Swift-compressed output against C++
 - ✅ Updating to newer C++ Snappy versions
 - ✅ Contributing compatibility tests
-
-**When you DON'T need it:**
-- ❌ Using SnappySwift in your app (SPM handles everything)
-- ❌ Running the existing test suite (test data is pre-generated)
 
 ## Compatibility
 
