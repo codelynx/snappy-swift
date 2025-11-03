@@ -78,6 +78,36 @@ int main() {
     }
     writeTestCase("numbers", numbers);
 
+    // Test 11: Large - 100KB (repeated pattern)
+    std::string large100k;
+    std::string chunk = "The quick brown fox jumps over the lazy dog. ";
+    while (large100k.size() < 100000) {
+        large100k += chunk;
+    }
+    large100k.resize(100000);  // Exactly 100KB
+    writeTestCase("large_100kb", large100k);
+
+    // Test 12: Large - 1MB (mixed content)
+    std::string large1mb;
+    for (int i = 0; i < 10000; i++) {
+        large1mb += "Line " + std::to_string(i) + ": Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+        if (i % 10 == 0) {
+            large1mb += std::string(50, 'A' + (i % 26));  // Add some repeated patterns
+        }
+    }
+    large1mb.resize(1048576);  // Exactly 1MB
+    writeTestCase("large_1mb", large1mb);
+
+    // Test 13: Large - 10MB (highly compressible)
+    std::cout << "Generating 10MB file (this may take a moment)..." << std::endl;
+    std::string large10mb;
+    large10mb.reserve(10485760);
+    for (int i = 0; i < 10485760 / 100; i++) {
+        // Highly compressible pattern
+        large10mb += std::string(100, 'X');
+    }
+    writeTestCase("large_10mb", large10mb);
+
     std::cout << "Test data generation complete!" << std::endl;
     return 0;
 }

@@ -167,6 +167,104 @@ final class CompatibilityTests: XCTestCase {
         }
     }
 
+    // MARK: - Large Payload Tests
+
+    func testDecompressCppLarge100KB() throws {
+        let compressed = try loadTestData("large_100kb")
+        let decompressed = try compressed.snappyDecompressed()
+
+        // Verify size
+        XCTAssertEqual(decompressed.count, 100000, "Should decompress to exactly 100KB")
+
+        // Verify it's repeated text pattern
+        let text = String(data: decompressed, encoding: .utf8)!
+        XCTAssertTrue(text.hasPrefix("The quick brown fox"), "Should start with expected text")
+
+        print("C++ large_100kb: compressed 100KB to \(compressed.count) bytes (ratio: \(Double(100000)/Double(compressed.count))x)")
+    }
+
+    func testDecompressCppLarge1MB() throws {
+        let compressed = try loadTestData("large_1mb")
+        let decompressed = try compressed.snappyDecompressed()
+
+        // Verify size
+        XCTAssertEqual(decompressed.count, 1048576, "Should decompress to exactly 1MB")
+
+        // Verify content structure
+        let text = String(data: decompressed, encoding: .utf8)!
+        XCTAssertTrue(text.contains("Line 0:"), "Should contain line markers")
+        XCTAssertTrue(text.contains("Lorem ipsum"), "Should contain Lorem ipsum text")
+
+        print("C++ large_1mb: compressed 1MB to \(compressed.count) bytes (ratio: \(Double(1048576)/Double(compressed.count))x)")
+    }
+
+    func testDecompressCppLarge10MB() throws {
+        let compressed = try loadTestData("large_10mb")
+        let decompressed = try compressed.snappyDecompressed()
+
+        // Verify size
+        XCTAssertEqual(decompressed.count, 10485700, "Should decompress to ~10MB")
+
+        // Verify it's all X's (highly compressible)
+        XCTAssertTrue(decompressed.allSatisfy { $0 == 0x58 }, "Should be all 'X' characters")
+
+        print("C++ large_10mb: compressed ~10MB to \(compressed.count) bytes (ratio: \(Double(10485700)/Double(compressed.count))x)")
+    }
+
+    func testRoundTripLarge100KB() throws {
+        // Test Swift compress → Swift decompress for 100KB
+        let cppCompressed = try loadTestData("large_100kb")
+        let decompressed1 = try cppCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed1.count, 100000)
+
+        // Compress with Swift
+        let swiftCompressed = try decompressed1.snappyCompressed()
+
+        // Decompress Swift compressed data
+        let decompressed2 = try swiftCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed2, decompressed1, "Round-trip should preserve data")
+
+        print("Round-trip [large_100kb]: C++:\(cppCompressed.count)B → Swift:\(swiftCompressed.count)B (diff: \(swiftCompressed.count - cppCompressed.count)B)")
+    }
+
+    func testRoundTripLarge1MB() throws {
+        // Test Swift compress → Swift decompress for 1MB
+        let cppCompressed = try loadTestData("large_1mb")
+        let decompressed1 = try cppCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed1.count, 1048576)
+
+        // Compress with Swift
+        let swiftCompressed = try decompressed1.snappyCompressed()
+
+        // Decompress Swift compressed data
+        let decompressed2 = try swiftCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed2, decompressed1, "Round-trip should preserve data")
+
+        print("Round-trip [large_1mb]: C++:\(cppCompressed.count)B → Swift:\(swiftCompressed.count)B (diff: \(swiftCompressed.count - cppCompressed.count)B)")
+    }
+
+    func testRoundTripLarge10MB() throws {
+        // Test Swift compress → Swift decompress for 10MB
+        let cppCompressed = try loadTestData("large_10mb")
+        let decompressed1 = try cppCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed1.count, 10485700)
+
+        // Compress with Swift
+        let swiftCompressed = try decompressed1.snappyCompressed()
+
+        // Decompress Swift compressed data
+        let decompressed2 = try swiftCompressed.snappyDecompressed()
+
+        XCTAssertEqual(decompressed2, decompressed1, "Round-trip should preserve data")
+
+        print("Round-trip [large_10mb]: C++:\(cppCompressed.count)B → Swift:\(swiftCompressed.count)B (diff: \(swiftCompressed.count - cppCompressed.count)B)")
+    }
+
     // MARK: - Batch Tests
 
     func testDecompressAllCppTestData() throws {
